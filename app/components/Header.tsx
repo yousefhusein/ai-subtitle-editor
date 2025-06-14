@@ -25,46 +25,42 @@ import {
   IconArrowRight,
   IconUser,
   IconLogout,
+  IconDashboard,
+  IconChevronDown,
 } from "@tabler/icons-react";
 import { motion } from "framer-motion";
+import { ThemeToggle } from "../providers";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
   const { user, signOut } = useAuth();
 
-  const handleSignOut = async () => {
-    await signOut();
-    router.push('/');
-  };
-
   return (
     <Navbar 
-      maxWidth="xl" 
-      className="bg-black/50 backdrop-blur-xl border-b border-zinc-800"
+      className="bg-background/60 backdrop-blur-md border-b border-divider"
+      maxWidth="xl"
+      isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
-      classNames={{
-        wrapper: "px-4 sm:px-6 lg:px-8",
-        item: "data-[active=true]:text-white",
-      }}
     >
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className="sm:hidden text-white"
+          className="sm:hidden text-foreground"
           icon={isMenuOpen ? <IconX size={24} /> : <IconMenu2 size={24} />}
         />
         <NavbarBrand className="gap-3">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
             className="flex items-center gap-2"
           >
-            <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
-              <IconVideo className="text-white" size={24} />
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+              <IconVideo size={20} className="text-white" />
             </div>
-            <p className="font-bold text-xl bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-              SubtitleCraft
+            <p className="font-bold text-foreground bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              AI Subtitle Editor
             </p>
           </motion.div>
         </NavbarBrand>
@@ -74,9 +70,19 @@ export default function Header() {
         <NavbarItem>
           <Button
             as="a"
-            href="#features"
+            href="/"
             variant="light"
-            className="text-zinc-300 hover:text-white"
+            className="text-foreground"
+          >
+            Home
+          </Button>
+        </NavbarItem>
+        <NavbarItem>
+          <Button
+            as="a"
+            href="/#features"
+            variant="light"
+            className="text-foreground"
           >
             Features
           </Button>
@@ -84,55 +90,45 @@ export default function Header() {
         <NavbarItem>
           <Button
             as="a"
-            href="#pricing"
+            href="/#pricing"
             variant="light"
-            className="text-zinc-300 hover:text-white"
+            className="text-foreground"
           >
             Pricing
-          </Button>
-        </NavbarItem>
-        <NavbarItem>
-          <Button
-            as="a"
-            href="#faq"
-            variant="light"
-            className="text-zinc-300 hover:text-white"
-          >
-            FAQ
           </Button>
         </NavbarItem>
       </NavbarContent>
 
       <NavbarContent justify="end">
+        <NavbarItem>
+          <ThemeToggle />
+        </NavbarItem>
         {user ? (
           <Dropdown placement="bottom-end">
             <DropdownTrigger>
-              <Avatar
-                isBordered
-                as="button"
-                className="transition-transform"
-                color="secondary"
-                size="sm"
-                icon={<IconUser size={20} />}
-              />
+              <Button
+                variant="light"
+                className="text-foreground"
+                endContent={<IconChevronDown className="h-4 w-4" />}
+                startContent={<IconUser className="h-4 w-4" />}
+              >
+                {user.email}
+              </Button>
             </DropdownTrigger>
-            <DropdownMenu aria-label="Profile Actions" variant="flat">
-              <DropdownItem key="profile" className="h-14 gap-2">
-                <p className="font-semibold">Signed in as</p>
-                <p className="font-semibold">{user.email}</p>
-              </DropdownItem>
+            <DropdownMenu aria-label="User menu">
               <DropdownItem
                 key="dashboard"
-                startContent={<IconVideo size={20} />}
-                onClick={() => router.push('/dashboard')}
+                startContent={<IconDashboard className="h-4 w-4" />}
+                onPress={() => router.push("/dashboard")}
               >
                 Dashboard
               </DropdownItem>
               <DropdownItem
-                key="logout"
+                key="signout"
+                startContent={<IconLogout className="h-4 w-4" />}
+                onPress={signOut}
+                className="text-danger"
                 color="danger"
-                startContent={<IconLogout size={20} />}
-                onClick={handleSignOut}
               >
                 Sign Out
               </DropdownItem>
@@ -145,19 +141,19 @@ export default function Header() {
                 as="a"
                 href="/login"
                 variant="light"
-                className="text-zinc-300 hover:text-white"
+                className="text-foreground"
               >
-                Sign In
+                Login
               </Button>
             </NavbarItem>
             <NavbarItem>
               <Button
                 as="a"
                 href="/signup"
-                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium"
-                endContent={<IconArrowRight size={20} />}
+                color="primary"
+                variant="flat"
               >
-                Get Started
+                Sign Up
               </Button>
             </NavbarItem>
           </>
